@@ -31,19 +31,19 @@ public class VeiculoEntity {
     private String marca;
 
     @Column (nullable = false)
-    private int ano;
+    private Integer ano;
 
     @Column (nullable = false)
-    private double valor;
+    private float valor;
 
     @Column (nullable = false, unique = true)
     private String placa;
 
     @Column (nullable = false)
-    private double maxDesconto;
+    private float maxDesconto;
 
     @Column (nullable = false)
     private boolean vendido;
 
-    private double valorVenda;
+    private float valorVenda;
 }
