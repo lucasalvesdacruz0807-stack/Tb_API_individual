@@ -1,6 +1,7 @@
 package org.serratec.controller;
 
 import jakarta.validation.Valid;
+import org.serratec.exception.MensagemResposta;
 import org.serratec.model.VeiculoAtualizar;
 import org.serratec.model.VeiculoBuscar;
 import org.serratec.model.VeiculoCriar;
@@ -19,16 +20,15 @@ public class VeiculoController {
     private final VeiculoService veiculoService;
 
     public VeiculoController(VeiculoService veiculoService) {
-
         this.veiculoService = veiculoService;
     }
 
     @PostMapping
-    public ResponseEntity<Void> inserir(@RequestBody VeiculoCriar veiculoCriar) {
-
+    public ResponseEntity<MensagemResposta> inserir(@RequestBody @Valid VeiculoCriar veiculoCriar) {
         veiculoService.inserir(veiculoCriar);
 
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(new MensagemResposta
+                ("Veículo cadastrado com sucesso"));
     }
 
 
@@ -43,20 +43,19 @@ public class VeiculoController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> atualizar(
-            @PathVariable UUID id,
-            @RequestBody @Valid VeiculoAtualizar veiculoAtualizar) {
+    public ResponseEntity<MensagemResposta> atualizar
+            (@PathVariable UUID id, @RequestBody @Valid VeiculoAtualizar veiculoAtualizar) {
 
         veiculoService.atualizar(id, veiculoAtualizar);
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(new MensagemResposta("Veículo atualizado com sucesso"));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletar(@PathVariable UUID id) {
+    public ResponseEntity<MensagemResposta> deletar(@PathVariable UUID id) {
 
         veiculoService.deletar(id);
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(new MensagemResposta("Veículo removido com sucesso"));
     }
 }

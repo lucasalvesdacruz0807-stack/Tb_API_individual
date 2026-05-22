@@ -2,6 +2,9 @@ package org.serratec.service;
 
 import org.serratec.entity.ClienteEntity;
 import org.serratec.entity.VeiculoEntity;
+import org.serratec.exception.ConflitoException;
+import org.serratec.exception.DadosInvalidosException;
+import org.serratec.exception.NaoEncontradoException;
 import org.serratec.model.VeiculoAtualizar;
 import org.serratec.model.VeiculoBuscar;
 import org.serratec.model.VeiculoCriar;
@@ -24,22 +27,27 @@ public class VeiculoService {
         this.clienteRepository = clienteRepository;
     }
 
-    //inserir
+
     public void inserir(VeiculoCriar veiculoCriar) {
 
         if (Boolean.TRUE.equals(veiculoCriar.getVendido()) && veiculoCriar.getValorVenda() == null) {
-            throw new RuntimeException("valorVenda é obrigatório quando vendido for true");
+            throw new DadosInvalidosException("valorVenda é obrigatório se vendido for true");
+        }
+        Optional<VeiculoEntity> placaExistente = veiculoRepository.findByPlaca(veiculoCriar.getPlaca());
+
+        if (placaExistente.isPresent()) {
+            throw new ConflitoException("Placa já cadastrada");
         }
 
         ClienteEntity cliente = clienteRepository.findById(veiculoCriar.getClienteId())
-                .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
+                .orElseThrow(() -> new NaoEncontradoException("Cliente não encontrado"));
 
         VeiculoEntity veiculo = new VeiculoEntity(cliente, veiculoCriar);
 
         veiculoRepository.save(veiculo);
     }
 
-    // buscar
+
     public List<VeiculoBuscar> buscar(String placa, String marca, String modelo) {
 
         List<VeiculoEntity> veiculos;
@@ -51,22 +59,34 @@ public class VeiculoService {
 
             veiculos = veiculoOpt
                     .map(List::of)
-                    .orElse(List.of());
+                    .orElseThrow(() -> new NaoEncontradoException("Placa não encontrada"));
 
         }
         else if (marca != null && !marca.isBlank()) {
 
             veiculos = veiculoRepository.findByMarcaContainingIgnoreCase(marca);
 
+            if (veiculos.isEmpty()) {
+                throw new NaoEncontradoException("Marca não encontrada");
+            }
+
         }
         else if (modelo != null && !modelo.isBlank()) {
 
             veiculos = veiculoRepository.findByModeloContainingIgnoreCase(modelo);
 
+            if (veiculos.isEmpty()) {
+                throw new NaoEncontradoException("Modelo não encontrado");
+            }
+
         }
         else {
 
             veiculos = veiculoRepository.findAll();
+
+            if (veiculos.isEmpty()) {
+                throw new NaoEncontradoException("Nenhum veículo encontrado");
+            }
         }
 
         return veiculos.stream()
@@ -77,7 +97,7 @@ public class VeiculoService {
     public void atualizar(UUID id, VeiculoAtualizar veiculoAtualizar) {
 
         VeiculoEntity veiculo = veiculoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Veículo não encontrado"));
+                .orElseThrow(() -> new NaoEncontradoException("Veículo não encontrado"));
 
         veiculo.setMarca(veiculoAtualizar.getMarca());
         veiculo.setModelo(veiculoAtualizar.getModelo());
@@ -88,7 +108,7 @@ public class VeiculoService {
         veiculo.setValorVenda(veiculoAtualizar.getValorVenda());
 
         if (Boolean.TRUE.equals(veiculoAtualizar.getVendido()) && veiculoAtualizar.getValorVenda() == null) {
-            throw new RuntimeException("Valor de venda é obrigatório quando o veículo está vendido");
+            throw new DadosInvalidosException("valorVenda é obrigatório se vendido for true");
         }
 
         veiculoRepository.save(veiculo);
@@ -99,7 +119,7 @@ public class VeiculoService {
         Optional<VeiculoEntity> veiculoOpt = veiculoRepository.findById(id);
 
         if (veiculoOpt.isEmpty()) {
-            // Exception futura
+            throw new NaoEncontradoException("Veículo não encontrado");
         }
 
         veiculoRepository.deleteById(id);
