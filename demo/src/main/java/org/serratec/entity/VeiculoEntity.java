@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.serratec.model.VeiculoCriar;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -40,10 +41,22 @@ public class VeiculoEntity {
     private String placa;
 
     @Column (nullable = false)
-    private float maxDesconto;
+    private float maximoDesconto;
 
     @Column (nullable = false)
     private boolean vendido;
 
     private float valorVenda;
+
+    public VeiculoEntity(ClienteEntity cliente, VeiculoCriar veiculoCriar) {
+        this.cliente = cliente;
+        this.marca = veiculoCriar.getMarca();
+        this.modelo = veiculoCriar.getModelo();
+        this.ano = veiculoCriar.getAno();
+        this.valor = veiculoCriar.getValor();
+        this.placa = veiculoCriar.getPlaca();
+        this.maximoDesconto = veiculoCriar.getMaximoDesconto();
+        this.vendido = Boolean.TRUE.equals(veiculoCriar.getVendido());
+        this.valorVenda = veiculoCriar.getValorVenda();
+    }
 }

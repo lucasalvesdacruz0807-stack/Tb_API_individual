@@ -27,7 +27,7 @@ public class VeiculoBuscar {
         this.ano = veiculo.getAno();
         this.valor = veiculo.getValor();
         this.placa = veiculo.getPlaca();
-        this.maximoDesconto = veiculo.getMaxDesconto();
+        this.maximoDesconto = veiculo.getMaximoDesconto();
         this.vendido = veiculo.isVendido();
         this.valorVenda = veiculo.getValorVenda();
     }

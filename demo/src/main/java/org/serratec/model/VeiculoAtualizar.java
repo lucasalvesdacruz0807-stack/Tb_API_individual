@@ -20,11 +20,11 @@ public class VeiculoAtualizar {
     @Min(1900)
     private Integer ano;
 
-    @NotBlank
+    @NotNull
     @Min(1)
     private float valor;
 
-    @NotBlank
+    @NotNull
     @Min(0)
     private float maximoDesconto;
 

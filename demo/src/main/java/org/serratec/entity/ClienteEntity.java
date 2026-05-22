@@ -34,6 +34,7 @@ public class ClienteEntity {
     public ClienteEntity(ClienteCriar cliente) {
         this.nome = cliente.getNome();
         this.cpf = cliente.getCpf();
+        this.email = cliente.getEmail();
+        this.telefone = cliente.getTelefone();
     }
-
 }

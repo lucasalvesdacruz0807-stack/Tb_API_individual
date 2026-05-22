@@ -23,14 +23,19 @@ public class VeiculoCriar {
     @Min(1900)
     private Integer ano;
 
-    @NotBlank
+    @NotNull
     @Min(1)
     private Float valor;
 
     @NotBlank
     private String placa;
 
-    @NotBlank
+    @NotNull
     @Min(0)
     private float maximoDesconto;
+
+    @NotNull
+    private Boolean vendido;
+
+    private Float valorVenda;
 }
