@@ -23,4 +23,40 @@ public class VeiculoController {
         this.veiculoService = veiculoService;
     }
 
+    @PostMapping
+    public ResponseEntity<Void> inserir(@RequestBody VeiculoCriar veiculoCriar) {
+
+        veiculoService.inserir(veiculoCriar);
+
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+
+    @GetMapping
+    public ResponseEntity<List<VeiculoBuscar>> buscar(
+            @RequestParam(required = false) String placa,
+            @RequestParam(required = false) String marca,
+            @RequestParam(required = false) String modelo
+    ) {
+
+        return ResponseEntity.ok(veiculoService.buscar(placa, marca, modelo));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> atualizar(
+            @PathVariable UUID id,
+            @RequestBody @Valid VeiculoAtualizar veiculoAtualizar) {
+
+        veiculoService.atualizar(id, veiculoAtualizar);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletar(@PathVariable UUID id) {
+
+        veiculoService.deletar(id);
+
+        return ResponseEntity.noContent().build();
+    }
 }

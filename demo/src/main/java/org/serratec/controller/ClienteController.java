@@ -22,4 +22,28 @@ public class ClienteController {
         this.clienteService = clienteService;
     }
 
+    @PostMapping
+    public ResponseEntity<Void> inserir(@Valid @RequestBody ClienteCriar clienteCriar) {
+        this.clienteService.inserir(clienteCriar);
+        return ResponseEntity.status(CREATED).build();
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ClienteBuscar>> buscar(
+            @RequestParam(required = false) String nome,
+            @RequestParam(required = false) String cpf
+    ) {
+
+        return ResponseEntity.ok(clienteService.buscar(nome, cpf));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletar(@PathVariable UUID id) {
+
+        clienteService.deletar(id);
+
+        return ResponseEntity.noContent().build();
+    }
+
+
 }
